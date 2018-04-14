@@ -1,0 +1,17 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[packages]
+
+robobrowser = "*"
+sqlalchemy = "*"
+docopt = "*"
+python-dotenv = "*"
+
+
+[dev-packages]
+
