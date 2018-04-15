@@ -11,7 +11,9 @@ robobrowser = "*"
 sqlalchemy = "*"
 docopt = "*"
 python-dotenv = "*"
+simple-settings = "*"
 
 
 [dev-packages]
 
+pytest = "*"
