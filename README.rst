@@ -2,22 +2,27 @@
 diksiyonaryo-ph
 ===============
 
-Scraping `KWF's Diksiyonaryo website <http://diksiyonaryo.ph>`_ to use more "advanced" search queries.
+We will scrape `KWF's Diksiyonaryo website <http://diksiyonaryo.ph>`_ to use more "advanced" search queries.
+
+Requirements
+------------
+
+This project uses a Pipfile to install and lock dependencies. Check the `pipenv <https://github.com/pypa/pipenv>`_ page for instructions on how to install pipenv on your machine.
 
 Initial Setup
 -------------
 
-This project uses a Pipfile to install dependencies. Check the `pipenv <https://github.com/pypa/pipenv>`_ page for instructions on how to install pipenv on your machine. ::
+Install dependencies using pipenv: ::
 
     $ pipenv install
 
-For convenience, you can set up an alias in your ~/.bash_profile: ::
+For convenience, you can also set up an alias for pipenv commands in your ``~/.bash_profile``: ::
 
-    alias prp="pipenv run python"
     alias diks="pipenv run python diksiyonaryo.py"
 
 After that we can run the app using: ::
 
+    $ cd <project dir>
     $ diks --version
     $ diks --help
     $ diks init_db
@@ -26,6 +31,17 @@ After that we can run the app using: ::
     $ diks define <word>
     $ diks search <query>
     $ diks run
+
+Advanced Setup
+--------------
+
+We can use `direnv <https://github.com/direnv/direnv>`_ to disable pipenv's feature of automatically loading ``.env`` files by putting this in your ``.envrc``: ::
+
+    export PIPENV_DONT_LOAD_ENV=1
+
+Alternatively, you can create a ``.proj-env`` and add your own configuration. ::
+
+    cp .proj-env.example .proj-env
 
 Contributing
 ------------
