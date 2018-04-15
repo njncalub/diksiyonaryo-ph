@@ -1,56 +1,51 @@
 """Diksiyonaryo CLI (https://github.com/njncalub/diksiyonaryo-ph).
 
 Usage:
-  diksiyonaryo.py [--settings=<file>] init_db
-  diksiyonaryo.py [--settings=<file>] fetch (alphabet | words [<letter>])
-  diksiyonaryo.py [--settings=<file>] define <word>
-  diksiyonaryo.py [--settings=<file>] search <query>
+  diksiyonaryo.py [options] init
+  diksiyonaryo.py [options] fetch (all | alphabet | words [<letter>])
+  diksiyonaryo.py [options] define <word>
+  diksiyonaryo.py [options] search <query>
   diksiyonaryo.py (-h | --help)
   diksiyonaryo.py (-v | --version)
-  diksiyonaryo.py test
+  diksiyonaryo.py run
 
 Options:
-  --settings=<file>  Use a different settings file [default: config.settings.local].
-  -h, --help         Show this screen.
-  -v, --version      Show version.
+  --settings=<file>  Use a different settings file
+                     [default: config.settings.local].
+  -q, --quiet        When DEBUG=True, decrease amount of text shown in the logs
+                     [default: False].
+  -h, --help         Show this help message and exit.
+  -v, --version      Show version and exit.
 """
 
 import sys
 
 from docopt import docopt
-from simple_settings import LazySettings
 
-from main.utils import get_version, init_database
+from main.models import get_or_create_connection
+from main.utils import format_version, get_settings, Printer
 
 
-# setting the version
 VERSION = (0, 1, 1)
-__version__ = get_version(VERSION)
 
-
-def get_settings(filename=None):
-    try:
-        if not filename:
-            raise NotImplementedError
-        
-        return LazySettings(filename)
-    except NotImplementedError as e:
-        sys.exit('No settings file provided.')
-    except FileNotFoundError as e:
-        sys.exit('Provided settings file does not exist.')
-    except Exception as e:
-        sys.exit('The application encountered an error during configuration.')
 
 if __name__ == '__main__':
-    args = docopt(__doc__, version=__version__)
+    args = docopt(__doc__, version=format_version(VERSION))
+    settings = get_settings(filename=args['--settings'])
     
-    settings = get_settings(args['--settings'])
+    printer = Printer(is_quiet=args['--quiet'])
     
     if settings.DEBUG:
-        print(f'Received arguments:\n{args}')
+        printer('Received arguments:', header=True)
+        printer(args, mode='pretty')
+        printer('Using the following settings:', header=True)
+        printer(settings.as_dict(), mode='pretty')
     
-    if args['init_db']:
-        init_database()
+    connection = get_or_create_connection(database_url=settings.DATABASE_URL)
+    
+    if args['init']:
+        printer('Initializing the database...', header=True)
+        connection.create_database()
     
     if args['fetch']:
         if args['alphabet']:
@@ -63,3 +58,8 @@ if __name__ == '__main__':
     
     if args['search']:
         raise NotImplementedError
+    
+    if args['run']:
+        raise NotImplementedError
+    
+    printer('Finished successfully.')

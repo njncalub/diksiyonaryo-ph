@@ -25,9 +25,8 @@ After that we can run the app using: ::
     $ cd <project dir>
     $ diks --version
     $ diks --help
-    $ diks init_db
-    $ diks fetch alphabet
-    $ diks fetch words
+    $ diks init
+    $ diks fetch all
     $ diks define <word>
     $ diks search <query>
     $ diks run
