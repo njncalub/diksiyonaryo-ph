@@ -12,6 +12,7 @@ sqlalchemy = "*"
 docopt = "*"
 python-dotenv = "*"
 simple-settings = "*"
+envparse = "*"
 
 
 [dev-packages]
