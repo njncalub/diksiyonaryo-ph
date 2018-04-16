@@ -205,15 +205,13 @@ class Scraper(object):
         
         # self.printer(word.title, mode='pretty')
     
-    def scrape_all(self):
+    def scrape_all(self, show_counter=False):
         self.printer('Fetching all words...')
-        counter = Counter()
         
         for letter in Letter.CHOICES:
-            counter = counter + self.scrape_letter(letter, counter=counter)
+            self.scrape_letter(letter, show_counter=show_counter)
         
         self.printer('Finished fetching.')
-        self.printer(counter, mode='pretty')
     
     def scrape_letter(self, letter, max_pages=None, counter=None,
                       show_counter=False):
@@ -258,7 +256,7 @@ class Scraper(object):
                 
                 # open link if it is not the same with the current one
                 if url != current_url:
-                    self.printer(f'Fetching words from "{url}"...')
+                    # self.printer(f'Fetching words from "{url}"...')
                     self.browser.open(url)
                     current_url = url
                 else:

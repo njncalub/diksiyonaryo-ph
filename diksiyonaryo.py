@@ -67,7 +67,7 @@ if __name__ == '__main__':
                                       max_pages=args['--max-pages'],
                                       show_counter=True)
             else:  # default: all
-                scraper.scrape_all()
+                scraper.scrape_all(show_counter=True)
         
         if args['define']:
             raise NotImplementedError
