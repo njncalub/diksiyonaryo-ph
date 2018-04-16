@@ -1,6 +1,7 @@
 import os
 import pprint
 import sys
+from collections import Counter
 
 from robobrowser import RoboBrowser
 from simple_settings import LazySettings
@@ -174,10 +175,6 @@ class Scraper(object):
     """
     
     def __init__(self, connection, settings, printer, *args, **kwargs):
-        self.ALPHABET = ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-                         'K', 'L', 'M', 'N', 'Ñ', 'Ng', 'O', 'P', 'Q', 'R',
-                         'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z')
-        
         self.connection = connection
         self.session = self.connection.create_session()
         
@@ -190,15 +187,39 @@ class Scraper(object):
         self.printer = printer
         self.browser = RoboBrowser(history=True, parser='html.parser')
     
-    def clean_word(self, word):
-        self.printer(word['id'], mode='pretty')
-        # pass
+    def process_word(self, W):
+        classes = [value for element in W.find_all(class_=True)
+                         for value in element["class"]]
+        
+        return Counter(classes)
+        
+        # self.printer(W, mode='pretty')
+        
+        # res = self.session.query(Word).filter(Word.title==W['id']).all()
+        # if res:
+        #     word = res[0]
+        # else:
+        #     word = Word(title=W['id'])
+        #     self.session.add(word)
+        #     self.session.commit()
+        
+        # self.printer(word.title, mode='pretty')
     
     def scrape_all(self):
-        for letter in self.ALPHABET:
-            self.scrape_letter(letter)
+        self.printer('Fetching all words...')
+        counter = Counter()
+        
+        for letter in Letter.CHOICES:
+            counter = counter + self.scrape_letter(letter, counter=counter)
+        
+        self.printer('Finished fetching.')
+        self.printer(counter, mode='pretty')
     
-    def scrape_letter(self, letter, max_pages=None):
+    def scrape_letter(self, letter, max_pages=None, counter=None,
+                      show_counter=False):
+        if not counter:
+            counter = Counter()
+        
         try:
             letter = self.format_letter(letter)
             url = self.URI_BYLETTER.format(base_url=self.BASE_URL,
@@ -224,7 +245,7 @@ class Scraper(object):
                 total_words = total_words + total_results
                 
                 for word in results:
-                    self.clean_word(word)
+                    counter = counter + self.process_word(word)
                 
                 # get link to next page
                 next_page = self.browser.get_link(self.TEXT_NEXTBUTTON)
@@ -237,6 +258,7 @@ class Scraper(object):
                 
                 # open link if it is not the same with the current one
                 if url != current_url:
+                    self.printer(f'Fetching words from "{url}"...')
                     self.browser.open(url)
                     current_url = url
                 else:
@@ -249,6 +271,11 @@ class Scraper(object):
             print(e)
             print(sys.exc_info())
             raise e
+        
+        if show_counter:
+            self.printer(counter, mode='pretty')
+        
+        return counter
     
     def format_letter(self, letter):
         return letter.title()

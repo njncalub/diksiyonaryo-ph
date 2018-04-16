@@ -42,11 +42,11 @@ if __name__ == '__main__':
     printer('Starting the application...')
     
     try:
-        # if settings.DEBUG:
-        #     printer('Received the following arguments:', header=True)
-        #     printer(args, mode='pretty')
-        #     printer('Using the following settings:', header=True)
-        #     printer(settings.as_dict(), mode='pretty')
+        if settings.DEBUG:
+            printer('Received the following arguments:', header=True)
+            printer(args, mode='pretty')
+            printer('Using the following settings:', header=True)
+            printer(settings.as_dict(), mode='pretty')
         
         connection = get_or_create_connection(
             database_url=settings.DATABASE_URL)
@@ -64,7 +64,8 @@ if __name__ == '__main__':
             
             if args['<letter>']:
                 scraper.scrape_letter(letter=args['<letter>'],
-                                      max_pages=args['--max-pages'])
+                                      max_pages=args['--max-pages'],
+                                      show_counter=True)
             else:  # default: all
                 scraper.scrape_all()
         
