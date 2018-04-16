@@ -2,7 +2,7 @@
 
 Usage:
   diksiyonaryo.py [options] init
-  diksiyonaryo.py [options] fetch (all | alphabet | words [<letter>])
+  diksiyonaryo.py [options] fetch [alphabet | words [<letter>]]
   diksiyonaryo.py [options] define <word>
   diksiyonaryo.py [options] search <query>
   diksiyonaryo.py (-h | --help)
@@ -24,7 +24,7 @@ import sys
 from docopt import docopt
 
 from main.models import get_or_create_connection
-from main.utils import format_version, get_settings, Printer
+from main.utils import format_version, Printer, ProjectSettings
 
 
 VERSION = (0, 1, 1)
@@ -33,45 +33,50 @@ __version__ = format_version(VERSION)
 if __name__ == '__main__':
     args = docopt(__doc__, version=__version__)
     
-    settings = get_settings(filename=args['--settings'])
+    settings = ProjectSettings(filename=args['--settings'])
     printer = Printer(is_quiet=args['--quiet'])
     
     printer('Starting the application...')
     
-    if settings.DEBUG:
-        printer('Received the following arguments:', header=True)
-        printer(args, mode='pretty')
-        printer('Using the following settings:', header=True)
-        printer(settings.as_dict(), mode='pretty')
-    
-    connection = get_or_create_connection(database_url=settings.DATABASE_URL)
-    
-    if args['init']:
-        printer('Initializing the database...', header=True)
-        connection.create_database()
-    
-    if args['fetch']:
-        if args['alphabet']:
-            raise NotImplementedError
-        if args['words']:
-            raise NotImplementedError
-    
-    if args['define']:
-        raise NotImplementedError
-    
-    if args['search']:
-        raise NotImplementedError
-    
-    if args['test']:
-        try:
-            import pytest
-        except ImportError as e:
-            print(sys.exc_info())
+    try:
+        if settings.DEBUG:
+            printer('Received the following arguments:', header=True)
+            printer(args, mode='pretty')
+            printer('Using the following settings:', header=True)
+            printer(settings.as_dict(), mode='pretty')
         
-        printer('Running tests...', header=True)
-        pytest.main(['-v', '-x', 'tests'])
-    
-    if args['run']:
-        raise NotImplementedError
-    
-    printer('Finished successfully.')
+        connection = get_or_create_connection(database_url=settings.DATABASE_URL)
+        
+        if args['init']:
+            printer('Initializing the database...', header=True)
+            connection.create_database()
+        
+        if args['fetch']:
+            if args['alphabet']:
+                raise NotImplementedError
+            elif args['words']:
+                raise NotImplementedError
+            else:  # default: all
+                raise NotImplementedError
+        
+        if args['define']:
+            raise NotImplementedError
+        
+        if args['search']:
+            raise NotImplementedError
+        
+        if args['test']:
+            try:
+                import pytest
+            except ImportError as e:
+                print(sys.exc_info())
+            
+            printer('Running tests...', header=True)
+            pytest.main(['-v', '-x', 'tests'])
+        
+        if args['run']:
+            raise NotImplementedError
+    except Exception as e:
+        printer('Finished with errors.', header=True, color='RED')
+    else:
+        printer('Finished successfully.', header=True, color='GREEN')
