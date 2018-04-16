@@ -2,7 +2,7 @@
 
 Usage:
   diksiyonaryo.py [options] init
-  diksiyonaryo.py [options] fetch [alphabet | words [<letter>]]
+  diksiyonaryo.py [options] fetch [<letter>]
   diksiyonaryo.py [options] define <word>
   diksiyonaryo.py [options] search <query>
   diksiyonaryo.py (-h | --help)
@@ -13,18 +13,21 @@ Usage:
 Options:
   --settings=<file>  Use a different settings file
                      [default: config.settings.local].
+  --max-pages=<max>  Set an upper limit on how many pages the scraper will
+                     fetch, per letter.
   -q, --quiet        When DEBUG=True, decrease amount of text shown in the logs
                      [default: False].
   -h, --help         Show this help message and exit.
   -v, --version      Show version and exit.
 """
 
+import os
 import sys
 
 from docopt import docopt
 
-from main.models import get_or_create_connection
-from main.utils import format_version, Printer, ProjectSettings
+from main.utils import format_version, get_or_create_connection
+from main.models import Printer, ProjectSettings, Scraper
 
 
 VERSION = (0, 1, 1)
@@ -39,25 +42,31 @@ if __name__ == '__main__':
     printer('Starting the application...')
     
     try:
-        if settings.DEBUG:
-            printer('Received the following arguments:', header=True)
-            printer(args, mode='pretty')
-            printer('Using the following settings:', header=True)
-            printer(settings.as_dict(), mode='pretty')
+        # if settings.DEBUG:
+        #     printer('Received the following arguments:', header=True)
+        #     printer(args, mode='pretty')
+        #     printer('Using the following settings:', header=True)
+        #     printer(settings.as_dict(), mode='pretty')
         
-        connection = get_or_create_connection(database_url=settings.DATABASE_URL)
+        connection = get_or_create_connection(
+            database_url=settings.DATABASE_URL)
         
         if args['init']:
             printer('Initializing the database...', header=True)
             connection.create_database()
+            connection.populate_alphabet()
         
         if args['fetch']:
-            if args['alphabet']:
-                raise NotImplementedError
-            elif args['words']:
-                raise NotImplementedError
+            printer(f'Fetching from {settings.SCRAPER_BASE_URL}...',
+                    header=True)
+            scraper = Scraper(connection=connection, settings=settings,
+                              printer=printer)
+            
+            if args['<letter>']:
+                scraper.scrape_letter(letter=args['<letter>'],
+                                      max_pages=args['--max-pages'])
             else:  # default: all
-                raise NotImplementedError
+                scraper.scrape_all()
         
         if args['define']:
             raise NotImplementedError

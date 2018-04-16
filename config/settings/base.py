@@ -6,7 +6,8 @@ from envparse import Env
 # configure env schema, describe all non-str
 env = Env(READ_DOT_PROJENV=bool,
           DOT_PROJENV_OVERRIDE=bool,
-          DEBUG=bool)
+          DEBUG=bool,
+          SCRAPER_PAGINATION_DIVIDER=int)
 
 # Using a flag here to check if .proj-env should be loaded. We use .proj-env
 # instead of .env to circumnavigate pipenv's default feature of automatically
@@ -37,6 +38,7 @@ SCRAPER_SELECTOR_PAGINATION = env('SCRAPER_SELECTOR_PAGINATION',
                                   default='.pagination-list .page')
 SCRAPER_SELECTOR_RESULTITEM = env('SCRAPER_SELECTOR_RESULTITEM',
                                   default='.word')
+SCRAPER_PAGINATION_DIVIDER = env('SCRAPER_PAGINATION_DIVIDER', default=4)
 SCRAPER_TEXT_NEXTBUTTON = env('SCRAPER_TEXT_NEXTBUTTON', default='>>')
 SCRAPER_URI_BYLETTER = env('SCRAPER_URI_BYLETTER',
                            default='{base_url}/list/{letter}')
