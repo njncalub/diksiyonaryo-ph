@@ -23,8 +23,6 @@ For convenience, you can also set up an alias for pipenv commands in your ``~/.b
 After that we can run the app using: ::
 
     $ cd <project dir>
-    $ diks --version
-    $ diks --help
     $ diks init
     $ diks fetch all
     $ diks define <word>
@@ -34,13 +32,20 @@ After that we can run the app using: ::
 Advanced Setup
 --------------
 
-We can use `direnv <https://github.com/direnv/direnv>`_ to disable pipenv's feature of automatically loading ``.env`` files by putting this in your ``.envrc``: ::
+You can create a ``.env`` in the project's root directory. Then we can use `direnv <https://github.com/direnv/direnv>`_ to disable pipenv's feature of automatically loading ``.env`` files by putting this in your ``.envrc``: ::
 
     export PIPENV_DONT_LOAD_ENV=1
 
 Alternatively, you can create a ``.proj-env`` and add your own configuration. ::
 
-    cp .proj-env.example .proj-env
+    $ cp .proj-env.example .proj-env
+
+Running Tests
+-------------
+Run ``py.test``: ::
+
+    $ cd <project dir>
+    $ diks test
 
 Contributing
 ------------

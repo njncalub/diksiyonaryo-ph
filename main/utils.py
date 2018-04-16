@@ -1,3 +1,4 @@
+import os
 import pprint
 
 from simple_settings import LazySettings
@@ -33,23 +34,28 @@ class Printer(object):
             self.draw_line()
             return
         
-        def print_(with_prefix=False):
+        def print_text(with_prefix=False, *args_, **kwargs_):
             if with_prefix:
                 print(self.prefix, end='')
             
             if not mode:
-                print(value)
+                print(value, *args_, **kwargs_)
             elif mode is 'pretty':
-                self.pretty(value)
+                self.pretty(value, *args_, **kwargs_)
         
         if header:
-            self.draw_line()
-            print_(with_prefix=True)
+            print()
+            self.add_format('BOLD')
+            self.draw_line(char='%')
+            print_text(with_prefix=True)
+            self.draw_line(char='%')
+            self.add_format('END')
+            print()
         elif footer:
-            print_(with_prefix=True)
+            print_text(with_prefix=True)
             self.draw_line()
         else:
-            print_()
+            print_text()
         
         if endline:
             self.draw_line()
@@ -57,11 +63,31 @@ class Printer(object):
     def __str__(self):
         return f'Printer(is_quiet={self.is_quiet})'
     
-    def draw_line(self, char=None, n=80):
+    def draw_line(self, char=None, n=None):
         if self.noline:
             return
-        char = char if char else '-'
+        char = char if char else '='
+        n = n if n else os.get_terminal_size().columns
         print(char * n)
+    
+    def add_format(self, code, end=None):
+        """
+        Taken from https://stackoverflow.com/a/17303428
+        """
+        colors = {
+            'PURPLE': '\033[95m',
+            'CYAN': '\033[96m',
+            'DARKCYAN': '\033[36m',
+            'BLUE': '\033[94m',
+            'GREEN': '\033[92m',
+            'YELLOW': '\033[93m',
+            'RED': '\033[91m',
+            'BOLD': '\033[1m',
+            'UNDERLINE': '\033[4m',
+            'END': '\033[0m',
+        }
+        end = end if end else ''
+        print(colors.get(code), end=end)
 
 
 def format_version(v):

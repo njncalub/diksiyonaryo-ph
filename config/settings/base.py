@@ -15,7 +15,7 @@ READ_DOT_PROJENV = env('READ_DOT_PROJENV', default=True)
 DOT_PROJENV_FILENAME = env('DOT_PROJENV_FILENAME', default='.proj-env')
 DOT_PROJENV_OVERRIDE = env('DOT_PROJENV_OVERRIDE', default=False)
 
-ROOT_DIR = Path(__file__) / '..' / '..'
+ROOT_DIR = Path(__file__) / '..' / '..' / '..'
 
 if READ_DOT_PROJENV:
     ENV_PATH = find_dotenv(filename=DOT_PROJENV_FILENAME)
