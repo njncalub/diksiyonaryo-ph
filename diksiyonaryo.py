@@ -1,22 +1,39 @@
+#!/usr/bin/env python
+# coding=utf-8
+
 """Diksiyonaryo CLI (https://github.com/njncalub/diksiyonaryo-ph).
+
+██████╗ ██╗██╗  ██╗     ███████╗██╗    ██╗   ██╗ ██████╗
+██╔══██╗██║██║ ██╔╝     ██╔════╝██║    ╚██╗ ██╔╝██╔═══██╗
+██║  ██║██║█████╔╝  ██╗ ███████╗██║ ██╗ ╚████╔╝ ██║   ██║
+██║  ██║██║██╔═██╗  ╚═╝ ╚════██║██║ ╚═╝  ╚██╔╝  ██║   ██║
+██████╔╝██║██║  ██╗     ███████║██║       ██║   ╚██████╔╝
+╚═════╝ ╚═╝╚═╝  ╚═╝ ▄▀  ╚══════╝╚═╝       ╚═╝    ╚═════╝
+       ███╗   ██╗ █████╗ ██████╗     ██╗   ██╗ ██████╗
+       ████╗  ██║██╔══██╗██╔══██╗    ╚██╗ ██╔╝██╔═══██╗
+       ██╔██╗ ██║███████║██████╔╝ ██╗ ╚████╔╝ ██║   ██║
+       ██║╚██╗██║██╔══██║██╔══██╗ ╚═╝  ╚██╔╝  ██║   ██║
+       ██║ ╚████║██║  ██║██║  ██║       ██║   ╚██████╔╝
+       ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═╝       ╚═╝    ╚═════╝
 
 Usage:
   diksiyonaryo.py [options] init
   diksiyonaryo.py [options] fetch [<letter>]
   diksiyonaryo.py [options] define <word>
   diksiyonaryo.py [options] search <query>
+  diksiyonaryo.py [options] run
   diksiyonaryo.py (-h | --help)
   diksiyonaryo.py (-v | --version)
   diksiyonaryo.py test
-  diksiyonaryo.py run
 
 Options:
   --settings=<file>  Use a different settings file
                      [default: config.settings.local].
+  --start=<page>     When fetching, specify which page to start at [default: 0].
   --max-pages=<max>  Set an upper limit on how many pages the scraper will
                      fetch, per letter.
-  -q, --quiet        When DEBUG=True, decrease amount of text shown in the logs
-                     [default: False].
+  --debug            Force debug mode.
+  -q, --quiet        Decrease amount of text shown [default: False].
   -h, --help         Show this help message and exit.
   -v, --version      Show version and exit.
 """
@@ -42,7 +59,7 @@ if __name__ == '__main__':
     printer('Starting the application...')
     
     try:
-        if settings.DEBUG:
+        if settings.DEBUG or args['--debug']:
             printer('Received the following arguments:', header=True)
             printer(args, mode='pretty')
             printer('Using the following settings:', header=True)

@@ -263,7 +263,7 @@ class Scraper(object):
                     break
             
             self.printer(f'> Letter "{letter}": processed ' \
-                         f'{total_words} word(s) accross ' \
+                         f'{total_words} word(s) across ' \
                          f'{page_count} page(s).')
         except Exception as e:
             print(e)

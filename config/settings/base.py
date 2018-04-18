@@ -1,3 +1,4 @@
+import warnings
 from pathlib import Path
 
 from dotenv import find_dotenv, load_dotenv
@@ -19,9 +20,14 @@ DOT_PROJENV_OVERRIDE = env('DOT_PROJENV_OVERRIDE', default=False)
 ROOT_DIR = Path(__file__) / '..' / '..' / '..'
 
 if READ_DOT_PROJENV:
-    ENV_PATH = find_dotenv(filename=DOT_PROJENV_FILENAME)
-    load_dotenv(dotenv_path=ENV_PATH, override=DOT_PROJENV_OVERRIDE,
-                verbose=True)
+    with warnings.catch_warnings():
+        warnings.filterwarnings('error')
+        try:
+            ENV_PATH = find_dotenv(filename=DOT_PROJENV_FILENAME)
+            load_dotenv(dotenv_path=ENV_PATH, override=DOT_PROJENV_OVERRIDE,
+                        verbose=True)
+        except Warning:
+            pass
 
 DEBUG = env('DEBUG', default=False)
 
