@@ -45,7 +45,7 @@ class Scraper(object):
             'entry': tag.get('id', None).strip(),
             'cleaned': self.clean_accents(tag.get('id', None)),
             'pos': tag.find(class_='pos').string.strip(),
-            'pronounciation': tag.find(class_='pronunciation').string.strip(),
+            'pronunciation': tag.find(class_='pronunciation').string.strip(),
             'html': tag.decode(),
         }
         
@@ -91,9 +91,8 @@ class Scraper(object):
                 break
             total_words = total_words + total_results
             
-            # for tag in results:
-                # self.process_result(tag)
-            self.process_result(results[0])
+            for tag in results:
+                self.process_result(tag)
             
             # get link to next page
             next_page = self.browser.get_link(self.next_button_text)

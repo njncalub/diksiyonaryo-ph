@@ -28,6 +28,7 @@ Options:
 """
 
 import sys
+import time
 
 from docopt import docopt
 
@@ -124,6 +125,7 @@ if __name__ == '__main__':
     
     printer('Starting the application...')
     establish_db_connection()
+    time.sleep(3)
     
     try:
         if settings.DEBUG or args['--debug']:
