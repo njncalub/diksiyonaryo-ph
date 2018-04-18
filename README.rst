@@ -9,7 +9,9 @@ Requirements
 
 This project uses Python 3. We recommend using `pyenv <https://github.com/pyenv/pyenv>`_ to switch between different versions of Python in your machine.
 
-This project uses a Pipfile to install and lock dependencies. Check the `pipenv <https://github.com/pypa/pipenv>`_ page for instructions on how to install pipenv on your machine.
+Pipfile is used for installing and locking the dependencies. Check the `pipenv <https://github.com/pypa/pipenv>`_ page for instructions on how to install pipenv on your machine.
+
+Finally, for the database, you need to install `MongoDB <https://www.mongodb.com/>`_.
 
 Initial Setup
 -------------
