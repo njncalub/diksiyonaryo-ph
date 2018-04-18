@@ -13,6 +13,11 @@ docopt = "*"
 python-dotenv = "*"
 simple-settings = "*"
 envparse = "*"
+colorama = "*"
+mongoengine = "*"
+graphene-mongo = "*"
+flask-graphql = "*"
+unidecode = "*"
 
 
 [dev-packages]
