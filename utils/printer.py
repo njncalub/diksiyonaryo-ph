@@ -103,9 +103,9 @@ class Printer(object):
         text = self.line_char * width
         
         if style == 'success':
-            text = Fore.LIGHTGREEN_EX + text
+            text = Fore.LIGHTGREEN_EX + text + Fore.WHITE
         elif style == 'error':
-            text = Fore.LIGHTRED_EX + text
+            text = Fore.LIGHTRED_EX + text + Fore.WHITE
         
         if prefix:
             text = prefix + text

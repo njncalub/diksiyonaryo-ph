@@ -1,7 +1,7 @@
 from robobrowser import RoboBrowser
 from unidecode import unidecode
 
-from data.models import Word
+from data.models import Letter, Word
 from services.database import create_word
 
 
@@ -9,12 +9,6 @@ class Scraper(object):
     """
     Connects to the website and scrapes data from it.
     """
-    
-    HISTORY = False
-    PARSER = 'html.parser'
-    LETTERS = ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-               'N', 'Ñ', 'Ng', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-               'Y', 'Z')
     
     def __init__(self, *args, **kwargs):
         options = {
@@ -24,13 +18,15 @@ class Scraper(object):
             'letter_list_page_uri': '{base_url}{next_page}',
             'result_item_selector': '.word',
             'printer': None,
+            'history': False,
+            'parser': 'html.parser',
         }
         options.update(kwargs)
         
         for key in options:
             self.__setattr__(key, options[key])
         
-        self.browser = RoboBrowser(history=self.HISTORY, parser=self.PARSER)
+        self.browser = RoboBrowser(history=self.history, parser=self.parser)
     
     def process_letter(self, letter: str):
         return letter.title()
@@ -40,18 +36,56 @@ class Scraper(object):
         
         return text
     
+    def process_alt_pronunciation(self, tag=None):
+        if not tag:
+            return None
+        
+        text = tag.string.strip()
+        # TODO: remove parentheses
+        
+        return text
+    
+    def process_pronunciation(self, tag):
+        if not tag:
+            return None
+        
+        text = tag.string.strip()
+        
+        return text
+    
+    def process_sense(self, item):
+        definition_text = item.find(class_='definition-text')
+        print(definition_text)
+        print()
+        # if definition_text:
+        #     text = definition_text.string.strip()
+        #     print(text)
+        #     print()
+    
     def process_result(self, tag):
         data = {
             'entry': tag.get('id', None).strip(),
-            'cleaned': self.clean_accents(tag.get('id', None)),
+            'cleaned_entry': self.clean_accents(tag.get('id', None)),
             'pos': tag.find(class_='pos').string.strip(),
-            'pronunciation': tag.find(class_='pronunciation').string.strip(),
-            'html': tag.decode(),
+            'pronunciation': self.process_pronunciation(
+                tag=tag.find(class_='pronunciation')),
+            'alt_pronunciation': self.process_alt_pronunciation(
+                tag=tag.find(class_='alternate-pronunciation')),
+            'html': str(tag),
+            'meanings': [],
+            'deriatives': [],
         }
         
         # loop through all the senses
-        for sense in tag.find_all(class_='sense'):
-            pass
+        # for sense in tag.find_all(class_='sense'):
+        #     cleaned = self.process_sense(item=sense)
+        #     if cleaned:
+        #         data['meanings'].append(cleaned)
+        
+        sense = tag.find_all(class_='sense')[0]
+        cleaned = self.process_sense(item=sense)
+        if cleaned:
+            data['meanings'].append(cleaned)
         
         results = Word.objects().filter(entry=data.get('entry'))
         if not results:
@@ -61,17 +95,17 @@ class Scraper(object):
     def scrape_all(self, start: int = None, end: int = None):
         self.printer('Fetching all words...')
         
-        for letter in self.LETTERS:
-            self.scrape_letter(letter)
+        for obj in Letter.objects().all():
+            self.scrape_letter(obj.letter)
         
         self.printer('Finished fetching.')
     
     def scrape_letter(self, letter: str, max_pages: int = None,
-                     start: int = None, end: int = None):
+                      start: int = None, end: int = None):
         letter = self.process_letter(letter)
         
         url = self.letter_list_uri.format(base_url=self.base_url,
-                                       letter=letter)
+                                          letter=letter)
         self.printer(f'Fetching words from "{url}"...')
         self.browser.open(url)
         
@@ -100,7 +134,7 @@ class Scraper(object):
                 break
             
             url = self.letter_list_page_uri.format(base_url=self.base_url,
-                                               next_page=next_page)
+                                                   next_page=next_page)
             
             # exit if url is the same
             if url == current_url:

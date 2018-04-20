@@ -29,16 +29,18 @@ if READ_DOT_PROJENV:
         except Warning:
             pass
 
+SECRET_KEY = env('SECRET_KEY', default='SET-YOUR-SECRET-KEY')
 DEBUG = env('DEBUG', default=False)
 
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Database
-# ------------------------------------------------------------------------------
-DATABASE_URL = env('DATABASE_URL', default='sqlite:///db.sqlite3')
+# -----------------------------------------------------------------------------
+DATABASE_URL = env('DATABASE_URL',
+                   default='mongodb://localhost:27017/diksiyonaryo')
 
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Scraping
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 SCRAPER_BASE_URL = env('SCRAPER_BASE_URL', default='http://diksiyonaryo.ph')
 SCRAPER_SELECTOR_PAGINATION = env('SCRAPER_SELECTOR_PAGINATION',
                                   default='.pagination-list .page')

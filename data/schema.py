@@ -17,7 +17,10 @@ class Query(graphene.ObjectType):
     node = Node.Field()
     words = MongoengineConnectionField(Word)
     
-    def resolve_words(self, info):
+    def resolve_words(self, info, entry=None):
+        if entry:
+            return list(WordModel.objects.filter(entry=entry))
+        
         return list(WordModel.objects.all())
 
 

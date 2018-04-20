@@ -8,7 +8,7 @@ Usage:
   diksiyonaryo.py [options] fetch [<letter>]
   diksiyonaryo.py [options] define <word>
   diksiyonaryo.py [options] search <query>
-  diksiyonaryo.py [options] run
+  diksiyonaryo.py [options] run [<host> <port>]
   diksiyonaryo.py [options] shell
   diksiyonaryo.py (-h | --help)
   diksiyonaryo.py (-v | --version)
@@ -17,7 +17,8 @@ Usage:
 Options:
   --settings=<file>  Use a different settings file
                      [default: config.settings.local].
-  --start=<page>     When fetching, specify which page to start at [default: 0].
+  --start=<page>     When fetching, specify which page to start at
+                     [default: 0].
   --end=<page>       When fetching, specify which page to end.
   --max-pages=<max>  Set an upper limit on how many pages the scraper will
                      fetch, per letter.
@@ -28,16 +29,17 @@ Options:
 """
 
 import sys
-import time
 
 from docopt import docopt
 
-from utils.printer import init_printer
-from utils.settings import load_settings
-from utils.version import format_version
-from services.database import register_connection
-from services.server import run_server
-from services.scraper import get_or_create_scraper, Scraper
+from utils import format_version, init_printer, load_settings
+from services import (
+    drop_database,
+    get_or_create_scraper,
+    initialize_database,
+    register_connection,
+    run_server,
+)
 
 
 HEADER = """
@@ -57,7 +59,7 @@ VERSION = (0, 1, 1)
 __version__ = format_version(VERSION)
 
 
-printer = None
+printer = print
 
 
 def run_shell():
@@ -74,8 +76,15 @@ def establish_db_connection():
 
 
 def populate_database():
+    destroy_database()
     printer('Populating the database...')
-    pass
+    initialize_database()
+
+
+def destroy_database():
+    printer('Deleting the database...')
+    drop_database()
+
 
 def define_word(word):
     pass
@@ -88,23 +97,23 @@ def search_query(query):
 def start_test():
     try:
         import pytest
+        
+        printer('Running tests...')
+        pytest.main(['-v', '-x', 'tests'])
     except ImportError as e:
-        printer('pytest required.', style='error')
+        printer('pytest required.', msg_type='header', style='error')
+
+
+def fetch_all(service, start=None, end=None):
+    printer(f'Fetching from {service.base_url}...')
     
-    printer('Running tests...')
-    pytest.main(['-v', '-x', 'tests'])
+    service.scrape_all()
 
 
-def fetch_all(scraper: Scraper, start: int, end: int):
-    printer(f'Fetching from {settings.SCRAPER_BASE_URL}...')
+def fetch_letter(service, start=None, end=None):
+    printer(f'Fetching from {service.base_url}...')
     
-    scraper.scrape_all()
-
-
-def fetch_letter(scraper: Scraper, start: int, end: int):
-    printer(f'Fetching from {settings.SCRAPER_BASE_URL}...')
-    
-    scraper.scrape_letter(letter=args['<letter>'],
+    service.scrape_letter(letter=args['<letter>'],
                           max_pages=args['--max-pages'])
 
 
@@ -125,7 +134,6 @@ if __name__ == '__main__':
     
     printer('Starting the application...')
     establish_db_connection()
-    time.sleep(3)
     
     try:
         if settings.DEBUG or args['--debug']:
@@ -137,17 +145,17 @@ if __name__ == '__main__':
             scraper = get_or_create_scraper(settings=settings, printer=printer)
             
             if args['<letter>']:
-                fetch_letter(scraper=scraper, start=args['--start'],
+                fetch_letter(service=scraper, start=args['--start'],
                              end=args['--end'])
             else:
-                fetch_all(scraper=scraper, start=args['--start'],
+                fetch_all(service=scraper, start=args['--start'],
                           end=args['--end'])
         elif args['define']:
             define_word(word=args['<word>'])
         elif args['search']:
             search_query(query=args['<query>'])
         elif args['test']:
-            search_query()
+            start_test()
         elif args['run']:
             run_server()
         elif args['shell']:
@@ -158,4 +166,3 @@ if __name__ == '__main__':
         printer(sys.exc_info())
     else:
         printer('Finished successfully.', msg_type='header', style='success')
-
