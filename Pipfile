@@ -18,8 +18,13 @@ mongoengine = "*"
 graphene-mongo = "*"
 flask-graphql = "*"
 unidecode = "*"
+flask-api = "*"
 
 
 [dev-packages]
 
 pytest = "*"
+pycodestyle = "*"
+coverage = "*"
+tox = "*"
+pytest-splinter = "*"

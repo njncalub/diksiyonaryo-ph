@@ -50,7 +50,6 @@ class Scraper(object):
         }
         
         # loop through all the senses
-        print('Looping through all the senses:')
         for sense in tag.find_all(class_='sense'):
             pass
         
