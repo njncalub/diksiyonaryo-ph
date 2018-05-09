@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "0a88138952cccd76d52dae034c47d2467c5007498eda538a02b4ed70213300f9"
+            "sha256": "0188dd6b4451d3e41d84726de0b1fc65cbb92014c6214e0891185858bc76cdcf"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -32,6 +32,10 @@
                 "sha256:72a8aa841bf390b11bf98d578f10caed7e6f0e0a5d8bfa2ec60bf0893296d50b"
             ],
             "version": "==0.5.12"
+        },
+        "apistar-mongoengine": {
+            "hashes": [],
+            "version": "==0.0.3"
         },
         "beautifulsoup4": {
             "hashes": [

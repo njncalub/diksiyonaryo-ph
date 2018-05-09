@@ -17,6 +17,7 @@ mongoengine = "*"
 unidecode = "*"
 apistar = "*"
 gunicorn = "*"
+apistar-mongoengine = "*"
 
 
 [dev-packages]
