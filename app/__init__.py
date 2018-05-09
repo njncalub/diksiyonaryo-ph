@@ -73,11 +73,16 @@ class DiksiyonaryoApp(object):
         print('Dropping the database...')
         self.db.drop_database()
     
-    def run_define(self, word):
-        pass
+    def run_define(self, entry):
+        print(f'Searching for {entry}...')
+        word = self.db.find_word(entry=entry)
+        print(word.entry)
     
     def run_search(self, query):
-        pass
+        print(f'Searching for {query}...')
+        words = self.db.find_words(matching=query)
+        for word in words:
+            print(word.entry)
     
     def run_test(self):
         try:

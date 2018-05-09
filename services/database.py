@@ -136,8 +136,10 @@ class Database(object):
         else:
             mongoengine.register_connection(alias='core', name='diksiyonaryo')
     
-    def get_words(self):
+    def find_words(self, matching: str=None):
+        if matching:
+            return Word.objects.filter(cleaned_entry__icontains=matching)
         return Word.objects.all()
     
-    def get_word(self, entry):
-        return Word.objects.get(entry=entry)
+    def find_word(self, entry):
+        return Word.objects.get(cleaned_entry=entry)
