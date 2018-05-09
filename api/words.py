@@ -2,31 +2,21 @@ import typing
 
 from apistar import App, Route, exceptions
 
-from .types import Word as WordType
-
-from data.models import Word
+from services import Database
 
 
-def list_words(app: App) -> typing.List:
-    queryset = Word.objects.all()
+def list_words(app: App, db: Database) -> typing.List[dict]:
+    queryset = db.get_words()
     
-    return [
-        {
-            'word': WordType(word.serialize()),
-            'url': app.reverse_url('word:get_word', entry=entry)
-        } for word in queryset
-    ]
+    return [word.serialize(app=app) for word in queryset]
 
 
-def get_word(app: App, entry: str) -> dict:
-    found = Word.objects.filter(entry=entry)
-    if not found:
+def get_word(app: App, db: Database, entry: str) -> dict:
+    word = db.get_word(entry=entry)
+    if not word:
         raise exceptions.NotFound()
     
-    return {
-        'word': found.first().serialize(),
-        'url': app.reverse_url('word:get_word', entry=entry)
-    }
+    return word.serialize(app=app)
 
 
 routes = [

@@ -10,7 +10,7 @@ app = App(routes=routes, components=components)
 def run_api_server(*args, **kwargs):
     options = {
         'host': '0.0.0.0',
-        'port': '5000',
+        'port': 5000,
         'debug': True,
         'secret_key': 'SET-YOUR-SECRET-KEY',
     }

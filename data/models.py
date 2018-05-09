@@ -17,7 +17,7 @@ class Letter(Document):
         'collection': 'letters',
     }
     
-    def __str__(self):
+    def __repr__(self):
         return 'Letter(letter="{}")'.format(self.letter)
     
     def serialize(self):
@@ -34,7 +34,7 @@ class PartOfSpeech(Document):
         'collection': 'parts',
     }
     
-    def __str__(self):
+    def __repr__(self):
         return 'PartOfSpeech(pos="{}")'.format(self.pos)
     
     def serialize(self):
@@ -46,7 +46,7 @@ class PartOfSpeech(Document):
 class Deriative(EmbeddedDocument):
     entry = StringField(required=True)
     
-    def __str__(self):
+    def __repr__(self):
         return 'Deriative(entry="{}")'.format(self.entry)
     
     def serialize(self):
@@ -59,7 +59,7 @@ class Meaning(EmbeddedDocument):
     meaning = StringField(required=True)
     example = StringField(required=False)
     
-    def __str__(self):
+    def __repr__(self):
         return 'Meaning(meaning="{}", example="{}")'.format(self.meaning,
                                                             self.example)
     
@@ -86,10 +86,10 @@ class Word(Document):
         'collection': 'words',
     }
     
-    def __str__(self):
+    def __repr__(self):
         return 'Word(entry="{}")'.format(self.entry)
     
-    def serialize(self):
+    def serialize(self, app):
         return {
             'entry': self.entry,
             'cleaned_entry': self.cleaned_entry,
@@ -99,5 +99,6 @@ class Word(Document):
             'deriatives': self.deriatives,
             'meanings': self.meanings,
             'html': self.html,
-            'created_date': self.created_date,
+            'created_date': str(self.created_date),
+            'url': app.reverse_url('words:get_word', entry=self.entry)
         }

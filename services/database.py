@@ -24,7 +24,8 @@ class Database(object):
                 self.__initialized = True
             
             if host:
-                self.register_connection(host=host)
+                self.host = host
+                self.register_connection(host=self.host)
             else:
                 self.register_connection()
         except Exception as e:
@@ -134,3 +135,9 @@ class Database(object):
             mongoengine.register_connection(alias='core', host=host)
         else:
             mongoengine.register_connection(alias='core', name='diksiyonaryo')
+    
+    def get_words(self):
+        return Word.objects.all()
+    
+    def get_word(self, entry):
+        return Word.objects.get(entry=entry)
