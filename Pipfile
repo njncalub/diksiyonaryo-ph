@@ -8,17 +8,14 @@ name = "pypi"
 [packages]
 
 robobrowser = "*"
-sqlalchemy = "*"
 docopt = "*"
 python-dotenv = "*"
 simple-settings = "*"
 envparse = "*"
 colorama = "*"
 mongoengine = "*"
-graphene-mongo = "*"
-flask-graphql = "*"
-unidecode = "*"
-flask-api = "*"
+Unidecode = "*"
+apistar = "*"
 
 
 [dev-packages]
