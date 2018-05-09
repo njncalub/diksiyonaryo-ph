@@ -13,7 +13,7 @@ env = Env(READ_DOT_PROJENV=bool,
 # Using a flag here to check if .proj-env should be loaded. We use .proj-env
 # instead of .env to circumnavigate pipenv's default feature of automatically
 # loading .env files in your project.
-READ_DOT_PROJENV = env('READ_DOT_PROJENV', default=True)
+READ_DOT_PROJENV = env('READ_DOT_PROJENV', default=False)
 DOT_PROJENV_FILENAME = env('DOT_PROJENV_FILENAME', default='.proj-env')
 DOT_PROJENV_OVERRIDE = env('DOT_PROJENV_OVERRIDE', default=False)
 
