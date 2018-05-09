@@ -16,6 +16,9 @@ class Letter(Document):
         'db_alias': 'core',
         'collection': 'letters',
     }
+    
+    def __str__(self):
+        return 'Letter(letter="{}")'.format(self.letter)
 
 
 class PartOfSpeech(Document):
@@ -25,21 +28,31 @@ class PartOfSpeech(Document):
         'db_alias': 'core',
         'collection': 'parts',
     }
+    
+    def __str__(self):
+        return 'PartOfSpeech(pos="{}")'.format(self.pos)
 
 
 class Deriative(EmbeddedDocument):
     entry = StringField(required=True)
+    
+    def __str__(self):
+        return 'Deriative(entry="{}")'.format(self.entry)
 
 
 class Meaning(EmbeddedDocument):
     meaning = StringField(required=True)
     example = StringField(required=False)
+    
+    def __str__(self):
+        return 'Meaning(meaning="{}", example="{}")'.format(self.meaning,
+                                                            self.example)
 
 
 class Word(Document):
     entry = StringField(required=True)
     cleaned_entry = StringField(required=True)
-    pos = StringField(required=True)
+    pos = StringField(required=False)
     pronunciation = StringField(required=False)
     alt_pronunciation = StringField(required=False)
     deriatives = EmbeddedDocumentListField(Deriative)
@@ -51,3 +64,6 @@ class Word(Document):
         'db_alias': 'core',
         'collection': 'words',
     }
+    
+    def __str__(self):
+        return 'Word(entry="{}")'.format(self.entry)

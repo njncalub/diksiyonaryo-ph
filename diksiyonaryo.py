@@ -22,6 +22,8 @@ Options:
   --end=<page>       When fetching, specify which page to end.
   --max-pages=<max>  Set an upper limit on how many pages the scraper will
                      fetch, per letter.
+  --from=<letter>    When fetching all letters, specify a letter to start at.
+  --to=<letter>      When fetching all letters, specify a letter to end at.
   --debug            Force debug mode.
   -q, --quiet        Decrease amount of text shown [default: False].
   -h, --help         Show this help message and exit.
@@ -104,10 +106,11 @@ def start_test():
         printer('pytest required.', msg_type='header', style='error')
 
 
-def fetch_all(service, start=None, end=None):
+def fetch_all(service, start=None, end=None, from_letter=None, to_letter=None):
     printer(f'Fetching from {service.base_url}...')
     
-    service.scrape_all()
+    service.scrape_all(start=start, end=end, from_letter=from_letter,
+                       to_letter=to_letter)
 
 
 def fetch_letter(service, start=None, end=None):
@@ -149,7 +152,8 @@ if __name__ == '__main__':
                              end=args['--end'])
             else:
                 fetch_all(service=scraper, start=args['--start'],
-                          end=args['--end'])
+                          end=args['--end'], from_letter=args['--from'],
+                          to_letter=args['--to'])
         elif args['define']:
             define_word(word=args['<word>'])
         elif args['search']:
