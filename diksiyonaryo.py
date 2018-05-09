@@ -72,9 +72,9 @@ def run_shell():
         return
 
 
-def establish_db_connection():
+def establish_db_connection(host):
     printer('Establishing the database connection...')
-    register_connection()
+    register_connection(host=host)
 
 
 def populate_database():
@@ -136,7 +136,7 @@ if __name__ == '__main__':
     printer = init_printer(is_quiet=args['--quiet'])
     
     printer('Starting the application...')
-    establish_db_connection()
+    establish_db_connection(host=settings.DATABASE_URL)
     
     try:
         if settings.DEBUG or args['--debug']:
