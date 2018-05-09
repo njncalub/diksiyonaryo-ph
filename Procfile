@@ -1,1 +1,1 @@
-web: gunicorn --workers=1 api.app:app --log-file=-
+web: gunicorn --workers=4 services.wsgi --log-file=-

@@ -4,7 +4,10 @@ from .routes import routes
 from .components import components
 
 
-app = App(routes=routes, components=components)
+def create_app():
+    return App(routes=routes,
+               components=components,
+               docs_url='/')
 
 
 def run_api_server(*args, **kwargs):
@@ -12,11 +15,12 @@ def run_api_server(*args, **kwargs):
         'host': '0.0.0.0',
         'port': 5000,
         'debug': True,
-        'secret_key': 'SET-YOUR-SECRET-KEY',
     }
     options.update(kwargs)
     
-    app.serve(host=options['host'], port=options['port'],
+    app = create_app()
+    app.serve(host=options['host'],
+              port=options['port'],
               debug=options['debug'])
 
 

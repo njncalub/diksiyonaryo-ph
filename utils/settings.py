@@ -45,7 +45,7 @@ class ProjectSettings(object):
             print(sys.exc_info())
     
     def __str__(self):
-        return f'ProjectSettings(filename={self.filename})'
+        return f'ProjectSettings(filename="{self.filename}")'
     
     def as_dict(self):
         if self.config:
@@ -54,5 +54,5 @@ class ProjectSettings(object):
             return {}
 
 
-def load_settings(filename):
+def load_settings(filename='config.settings.local') -> ProjectSettings:
     return ProjectSettings(filename=filename)

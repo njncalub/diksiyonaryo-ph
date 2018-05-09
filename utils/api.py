@@ -1,4 +1,4 @@
-from api.app import run_api_server as run
+from api.server import run_api_server as run
 
 
 def run_api_server(host, port, debug=False):

@@ -1,14 +1,15 @@
 import datetime
 
+from apistar_mongoengine.models import (
+    Document,
+    EmbeddedDocument,
+)
 from mongoengine import (
     DateTimeField,
     EmbeddedDocumentListField,
     StringField,
 )
-from apistar_mongoengine.models import (
-    Document,
-    EmbeddedDocument,
-)
+
 
 class Letter(Document):
     letter = StringField(required=True)
