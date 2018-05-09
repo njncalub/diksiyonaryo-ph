@@ -3,8 +3,21 @@
 
 """Diksiyonaryo CLI (https://github.com/njncalub/diksiyonaryo-ph).
 
+██████╗ ██╗██╗  ██╗     ███████╗██╗    ██╗   ██╗ ██████╗
+██╔══██╗██║██║ ██╔╝     ██╔════╝██║    ╚██╗ ██╔╝██╔═══██╗
+██║  ██║██║█████╔╝  ██╗ ███████╗██║ ██╗ ╚████╔╝ ██║   ██║
+██║  ██║██║██╔═██╗  ╚═╝ ╚════██║██║ ╚═╝  ╚██╔╝  ██║   ██║
+██████╔╝██║██║  ██╗     ███████║██║       ██║   ╚██████╔╝
+╚═════╝ ╚═╝╚═╝  ╚═╝ ▄▀  ╚══════╝╚═╝       ╚═╝    ╚═════╝
+       ███╗   ██╗ █████╗ ██████╗     ██╗   ██╗ ██████╗
+       ████╗  ██║██╔══██╗██╔══██╗    ╚██╗ ██╔╝██╔═══██╗
+       ██╔██╗ ██║███████║██████╔╝ ██╗ ╚████╔╝ ██║   ██║
+       ██║╚██╗██║██╔══██║██╔══██╗ ╚═╝  ╚██╔╝  ██║   ██║
+       ██║ ╚████║██║  ██║██║  ██║       ██║   ╚██████╔╝
+       ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═╝       ╚═╝    ╚═════╝
+
 Usage:
-  diksiyonaryo.py [options] init
+  diksiyonaryo.py [options] (init | drop)
   diksiyonaryo.py [options] fetch [<letter>]
   diksiyonaryo.py [options] define <word>
   diksiyonaryo.py [options] search <query>
@@ -30,145 +43,43 @@ Options:
   -v, --version      Show version and exit.
 """
 
-import sys
-
 from docopt import docopt
 
-from utils import format_version, init_printer, load_settings
-from services import (
-    drop_database,
-    get_or_create_scraper,
-    initialize_database,
-    register_connection,
-    run_api_server,
-)
-
-
-HEADER = """
-██████╗ ██╗██╗  ██╗     ███████╗██╗    ██╗   ██╗ ██████╗
-██╔══██╗██║██║ ██╔╝     ██╔════╝██║    ╚██╗ ██╔╝██╔═══██╗
-██║  ██║██║█████╔╝  ██╗ ███████╗██║ ██╗ ╚████╔╝ ██║   ██║
-██║  ██║██║██╔═██╗  ╚═╝ ╚════██║██║ ╚═╝  ╚██╔╝  ██║   ██║
-██████╔╝██║██║  ██╗     ███████║██║       ██║   ╚██████╔╝
-╚═════╝ ╚═╝╚═╝  ╚═╝ ▄▀  ╚══════╝╚═╝       ╚═╝    ╚═════╝
-       ███╗   ██╗ █████╗ ██████╗     ██╗   ██╗ ██████╗
-       ████╗  ██║██╔══██╗██╔══██╗    ╚██╗ ██╔╝██╔═══██╗
-       ██╔██╗ ██║███████║██████╔╝ ██╗ ╚████╔╝ ██║   ██║
-       ██║╚██╗██║██╔══██║██╔══██╗ ╚═╝  ╚██╔╝  ██║   ██║
-       ██║ ╚████║██║  ██║██║  ██║       ██║   ╚██████╔╝
-       ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═╝       ╚═╝    ╚═════╝"""
-VERSION = (0, 1, 1)
-__version__ = format_version(VERSION)
-
-
-printer = print
-
-
-def run_shell():
-    try:
-        while True:
-            pass
-    except KeyboardInterrupt:
-        return
-
-def run_server(settings):
-    run_api_server(settings=settings)
-
-def establish_db_connection(host):
-    printer('Establishing the database connection...')
-    register_connection(host=host)
-
-
-def populate_database():
-    destroy_database()
-    printer('Populating the database...')
-    initialize_database()
-
-
-def destroy_database():
-    printer('Deleting the database...')
-    drop_database()
-
-
-def define_word(word):
-    pass
-
-
-def search_query(query):
-    pass
-
-
-def start_test():
-    try:
-        import pytest
-        
-        printer('Running tests...')
-        pytest.main(['-v', '-x', 'tests'])
-    except ImportError as e:
-        printer('pytest required.', msg_type='header', style='error')
-
-
-def fetch_all(service, start=None, end=None, from_letter=None, to_letter=None):
-    printer(f'Fetching from {service.base_url}...')
-    
-    service.scrape_all(start=start, end=end, from_letter=from_letter,
-                       to_letter=to_letter)
-
-
-def fetch_letter(service, start=None, end=None):
-    printer(f'Fetching from {service.base_url}...')
-    
-    service.scrape_letter(letter=args['<letter>'],
-                          max_pages=args['--max-pages'])
-
-
-def show_debug_info(*args, **kwargs):
-    if kwargs.get('args', None):
-        printer('Received the following arguments:')
-        printer(kwargs.get('args'), mode='pretty')
-    
-    if kwargs.get('settings', None):
-        printer('Using the following settings:')
-        printer(kwargs.get('settings').as_dict(), mode='pretty')
+from app import DiksiyonaryoApp, __version__
+from utils.settings import load_settings
 
 
 if __name__ == '__main__':
     args = docopt(__doc__, version=__version__)
     settings = load_settings(filename=args['--settings'])
-    printer = init_printer(is_quiet=args['--quiet'])
     
-    printer('Starting the application...')
-    establish_db_connection(host=settings.DATABASE_URL)
+    app = DiksiyonaryoApp(settings=settings, is_quiet=args['--quiet'])
     
-    try:
-        if settings.DEBUG or args['--debug']:
-            show_debug_info(args=args, settings=settings)
-        
-        if args['init']:
-            populate_database()
-        elif args['fetch']:
-            scraper = get_or_create_scraper(settings=settings, printer=printer)
-            
-            if args['<letter>']:
-                fetch_letter(service=scraper, start=args['--start'],
-                             end=args['--end'])
-            else:
-                fetch_all(service=scraper, start=args['--start'],
-                          end=args['--end'], from_letter=args['--from'],
-                          to_letter=args['--to'])
-        elif args['define']:
-            define_word(word=args['<word>'])
-        elif args['search']:
-            search_query(query=args['<query>'])
-        elif args['test']:
-            start_test()
-        elif args['run']:
-            run_server(settings=settings)
-        elif args['shell']:
-            run_shell()
-    except Exception as e:
-        printer('Finished with errors.', msg_type='header', style='error')
-        printer(e, mode='pretty')
-        printer(sys.exc_info())
-    else:
-        printer('Finished successfully.', msg_type='header', style='success')
+    if args['init']:
+        app.run_init_db()
+    elif args['drop']:
+        app.run_drop_db()
+    elif args['fetch']:
+        if args['<letter>']:
+            app.run_fetch_letter(letter=args['<letter>'],
+                                 max_pages=args['--max-pages'],
+                                 start=args['--start'], end=args['--end'])
+        else:
+            app.run_fetch_all(start=args['--start'], end=args['--end'],
+                              from_letter=args['--from'],
+                              to_letter=args['--to'])
+    elif args['define']:
+        app.run_define(word=args['<word>'])
+    elif args['search']:
+        app.run_search(query=args['<query>'])
+    elif args['test']:
+        app.run_test()
+    elif args['run']:
+        options = {
+            'host': args['<host>'] or settings.API_SERVER_HOST,
+            'port': args['<port>'] or settings.API_SERVER_PORT,
+            'debug': args['--debug'] or settings.API_SERVER_DEBUG,
+        }
+        app.run_server(**options)
+    elif args['shell']:
+        app.run_shell()

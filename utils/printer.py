@@ -113,5 +113,5 @@ class Printer(object):
         print(text)
 
 
-def init_printer(is_quiet):
+def init_printer_service(is_quiet):
     return Printer(is_quiet=is_quiet)

@@ -2,7 +2,6 @@ from robobrowser import RoboBrowser
 from unidecode import unidecode
 
 from data.models import Letter, Word
-from services.database import create_word
 
 
 class Scraper(object):
@@ -20,6 +19,7 @@ class Scraper(object):
             'printer': None,
             'history': False,
             'parser': 'html.parser',
+            'db': None,
         }
         options.update(kwargs)
         
@@ -105,7 +105,7 @@ class Scraper(object):
         
         results = Word.objects().filter(entry=data.get('entry'))
         if not results:
-            word = create_word(**data)
+            word = self.db.create_word(**data)
             return word
     
     def scrape_all(self, start: int = None, end: int = None,
@@ -175,16 +175,3 @@ class Scraper(object):
     
     def __str__(self):
         return 'Scraper'
-
-
-def get_or_create_scraper(settings, printer, *args, **kwargs) -> Scraper:
-    options = {
-        'base_url': settings.SCRAPER_BASE_URL,
-        'next_button_text': settings.SCRAPER_TEXT_NEXTBUTTON,
-        'letter_list_uri': settings.SCRAPER_URI_BYLETTER,
-        'letter_list_page_uri': settings.SCRAPER_URI_BYLETTERPAGE,
-        'result_item_selector': settings.SCRAPER_SELECTOR_RESULTITEM,
-        'printer': printer,
-    }
-    
-    return Scraper(**options)
