@@ -19,6 +19,11 @@ class Letter(Document):
     
     def __str__(self):
         return 'Letter(letter="{}")'.format(self.letter)
+    
+    def serialize(self):
+        return {
+            'letter': self.letter,
+        }
 
 
 class PartOfSpeech(Document):
@@ -31,6 +36,11 @@ class PartOfSpeech(Document):
     
     def __str__(self):
         return 'PartOfSpeech(pos="{}")'.format(self.pos)
+    
+    def serialize(self):
+        return {
+            'pos': self.pos,
+        }
 
 
 class Deriative(EmbeddedDocument):
@@ -38,6 +48,11 @@ class Deriative(EmbeddedDocument):
     
     def __str__(self):
         return 'Deriative(entry="{}")'.format(self.entry)
+    
+    def serialize(self):
+        return {
+            'entry': self.entry,
+        }
 
 
 class Meaning(EmbeddedDocument):
@@ -47,6 +62,12 @@ class Meaning(EmbeddedDocument):
     def __str__(self):
         return 'Meaning(meaning="{}", example="{}")'.format(self.meaning,
                                                             self.example)
+    
+    def serialize(self):
+        return {
+            'meaning': self.meaning,
+            'example': self.example,
+        }
 
 
 class Word(Document):
@@ -67,3 +88,16 @@ class Word(Document):
     
     def __str__(self):
         return 'Word(entry="{}")'.format(self.entry)
+    
+    def serialize(self):
+        return {
+            'entry': self.entry,
+            'cleaned_entry': self.cleaned_entry,
+            'pos': self.pos,
+            'pronunciation': self.pronunciation,
+            'alt_pronunciation': self.alt_pronunciation,
+            'deriatives': self.deriatives,
+            'meanings': self.meanings,
+            'html': self.html,
+            'created_date': self.created_date,
+        }

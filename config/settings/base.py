@@ -8,7 +8,9 @@ from envparse import Env
 env = Env(READ_DOT_PROJENV=bool,
           DOT_PROJENV_OVERRIDE=bool,
           DEBUG=bool,
-          SCRAPER_PAGINATION_DIVIDER=int)
+          SCRAPER_PAGINATION_DIVIDER=int,
+          API_SERVER_PORT=int,
+          API_SERVER_DEBUG=bool)
 
 # Using a flag here to check if .proj-env should be loaded. We use .proj-env
 # instead of .env to circumnavigate pipenv's default feature of automatically
@@ -52,3 +54,10 @@ SCRAPER_URI_BYLETTER = env('SCRAPER_URI_BYLETTER',
                            default='{base_url}/list/{letter}')
 SCRAPER_URI_BYLETTERPAGE = env('SCRAPER_URI_BYLETTERPAGE',
                                default='{base_url}{next_page}')
+
+# -----------------------------------------------------------------------------
+# API Server
+# -----------------------------------------------------------------------------
+API_SERVER_HOST = env('API_SERVER_HOST', default='0.0.0.0')
+API_SERVER_PORT = env('API_SERVER_PORT', default=5000)
+API_SERVER_DEBUG = env('API_SERVER_DEBUG', default=DEBUG)

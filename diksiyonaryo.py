@@ -40,7 +40,7 @@ from services import (
     get_or_create_scraper,
     initialize_database,
     register_connection,
-    run_server,
+    run_api_server,
 )
 
 
@@ -71,6 +71,8 @@ def run_shell():
     except KeyboardInterrupt:
         return
 
+def run_server(settings):
+    run_api_server(settings=settings)
 
 def establish_db_connection(host):
     printer('Establishing the database connection...')
@@ -161,7 +163,7 @@ if __name__ == '__main__':
         elif args['test']:
             start_test()
         elif args['run']:
-            run_server()
+            run_server(settings=settings)
         elif args['shell']:
             run_shell()
     except Exception as e:
