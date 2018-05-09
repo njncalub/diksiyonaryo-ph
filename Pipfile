@@ -14,8 +14,9 @@ simple-settings = "*"
 envparse = "*"
 colorama = "*"
 mongoengine = "*"
-Unidecode = "*"
+unidecode = "*"
 apistar = "*"
+gunicorn = "*"
 
 
 [dev-packages]
